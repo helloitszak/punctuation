@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if command -v figlet >/dev/null 2>&1; then
+  if command -v lolcat >/dev/null 2>&1; then
+    figlet "git gud scrub" | lolcat
+  else
+    figlet "git gud scrub"
+  fi
+else
+  echo "git gud scrub"
+fi

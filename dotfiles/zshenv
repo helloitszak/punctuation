@@ -1,0 +1,6 @@
+#shellcheck shell=bash disable=SC1091,SC2034
+setopt no_global_rcs
+
+# XDG_CONFIG_HOME probably isn't set here... but let's respect it if it is
+export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+[[ -f $ZDOTDIR/.zshenv ]] && . $ZDOTDIR/.zshenv

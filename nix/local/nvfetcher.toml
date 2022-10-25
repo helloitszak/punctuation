@@ -1,0 +1,11 @@
+[zsh-async]
+src.github = "mafredri/zsh-async"
+fetch.github = "mafredri/zsh-async"
+
+[zsh-syntax-highlighting]
+src.github_tag = "zsh-users/zsh-syntax-highlighting"
+fetch.github = "zsh-users/zsh-syntax-highlighting"
+
+[zsh-history-substring-search]
+src.github = "zsh-users/zsh-history-substring-search"
+fetch.github = "zsh-users/zsh-history-substring-search"
