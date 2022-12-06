@@ -2,10 +2,10 @@
   description = "Zak's Home Configuration and Dotfiles";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-22.05";
+      url = "github:nix-community/home-manager/release-22.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -39,18 +39,22 @@
     in {
       homeConfigurations."${username}@Zakbook-M1" =
         home-manager.lib.homeManagerConfiguration rec {
-          inherit username system pkgs;
-          homeDirectory = "/home/${username}";
+          inherit pkgs;
 
           extraSpecialArgs = {
             dotroot = ./.;
           };
 
-          configuration = {
-            imports = [
-              ./nix/home-modules/default.nix
-            ];
-          };
+          modules = [
+            ./nix/home-modules/default.nix 
+            {
+              home = {
+                inherit username;
+                stateVersion = "22.11";
+                homeDirectory = "/home/${username}";
+              };
+            }
+          ];
         };
     }
     // flake-utils.lib.eachDefaultSystem (system:
@@ -59,7 +63,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nixfmt
-            nvfetcher-bin
+            # nvfetcher-bin
             home-manager.defaultPackage.${system}
           ];
         };
