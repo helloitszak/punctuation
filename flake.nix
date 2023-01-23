@@ -69,7 +69,9 @@
         pkgs = import nixpkgs {inherit system overlays;};
       in {
         # Allow usage of local packages ad-hoc
-        packages = pkgs.local;
+        packages = pkgs.local // {
+          home-manager = home-manager.defaultPackage.${system};
+        };
         
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
