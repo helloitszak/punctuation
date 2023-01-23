@@ -33,6 +33,7 @@
     minikube
     cmake
     ipcalc
+    local.proxmark3-rrg
   ];
 
   programs.direnv = {
