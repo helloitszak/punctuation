@@ -11,6 +11,9 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
+    alejandra.url = "github:kamadorueda/alejandra/3.0.0";
+    alejandra.inputs.nixpkgs.follows = "nixpkgs";
+
     nvfetcher = {
       url = "github:berberman/nvfetcher";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,46 +27,55 @@
     home-manager,
     flake-utils,
     nvfetcher,
+    alejandra,
     ...
   }: let
-      local-pkgs = import ./nix/local {};
+    local-pkgs = import ./nix/local {};
 
-      overlays = [
-        local-pkgs.overlay
-        nvfetcher.overlay
-      ];
+    overlays = [
+      local-pkgs.overlay
+      nvfetcher.overlays.default
+    ];
 
-      pkgs = import nixpkgs { inherit overlays system; };
-      username = "zakko";
-      system = "aarch64-darwin";
-    in {
-      homeConfigurations."${username}@Zakbook-M1" =
-        home-manager.lib.homeManagerConfiguration rec {
-          inherit pkgs;
+    pkgs = import nixpkgs {inherit overlays system;};
+    username = "zakko";
+    system = "aarch64-darwin";
+  in
+    {
+      homeConfigurations."${username}@Zakbook-M1" = home-manager.lib.homeManagerConfiguration rec {
+        inherit pkgs;
 
-          extraSpecialArgs = {
-            dotroot = ./.;
-          };
-
-          modules = [
-            ./nix/home-modules/default.nix 
-            {
-              home = {
-                inherit username;
-                stateVersion = "22.11";
-                homeDirectory = "/home/${username}";
-              };
-            }
-          ];
+        extraSpecialArgs = {
+          dotroot = ./.;
         };
+
+        modules = [
+          ./nix/home-modules/default.nix
+          {
+            home = {
+              inherit username;
+              stateVersion = "22.11";
+              homeDirectory = "/home/${username}";
+              packages = [
+                alejandra.defaultPackage.${system}
+              ];
+            };
+          }
+        ];
+      };
     }
-    // flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system overlays; };
+    // flake-utils.lib.eachDefaultSystem (
+      system: let
+        pkgs = import nixpkgs {inherit system overlays;};
       in {
+        # Allow usage of local packages ad-hoc
+        packages = pkgs.local;
+        
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nixfmt
-            # nvfetcher-bin
+            alejandra.defaultPackage.${system}
+            nvfetcher-bin
             home-manager.defaultPackage.${system}
           ];
         };

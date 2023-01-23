@@ -3,7 +3,7 @@
   stdenv,
   makeWrapper,
   figlet,
-  lolcat
+  lolcat,
 }:
 stdenv.mkDerivation rec {
   pname = "gid-gud";
