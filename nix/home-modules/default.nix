@@ -9,13 +9,19 @@
   ];
 
   home.packages = with pkgs; [
+    nodejs
+    ffmpeg
+    bash
+    nmap
+    inetutils
+    aria2
     vim
-    git
     exa
     fd
     sd
     fzf
     bat
+    yt-dlp
     # httpie
     curl
     jq
@@ -24,7 +30,9 @@
     rustup
     tree
     youtube-dl
-    local.git-gud
+    minikube
+    cmake
+    ipcalc
   ];
 
   programs.direnv = {

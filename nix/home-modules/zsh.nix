@@ -5,6 +5,7 @@
 }: {
   home.packages = with pkgs; [
     zsh
+    starship
   ];
 
   home.file.".zshenv".source = "${dotroot}/dotfiles/zshenv";

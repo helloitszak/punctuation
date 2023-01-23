@@ -58,6 +58,7 @@ path=(
   $HOME/.udots/udbin
   $HOME/.cargo/bin
   $HOME/.poetry/bin
+  $HOME/.rd/bin # Rancher Desktop
   $HOME/perl5/bin
   /usr/local/opt/go/libexec/bin
   /usr/local/{bin,sbin}
