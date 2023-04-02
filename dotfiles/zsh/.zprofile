@@ -55,6 +55,7 @@ fpath=(
 # /usr/bin is in here for cygwin compatibility because fml
 path=(
   $HOME/bin
+  $HOME/.nix-profile/bin
   $HOME/.udots/udbin
   $HOME/.cargo/bin
   $HOME/.poetry/bin

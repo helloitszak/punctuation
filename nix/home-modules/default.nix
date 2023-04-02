@@ -31,6 +31,7 @@
     tree
     youtube-dl
     minikube
+    kubectl
     cmake
     ipcalc
     local.proxmark3-rrg
