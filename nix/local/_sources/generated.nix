@@ -4,34 +4,34 @@
   zsh-async = {
     pname = "zsh-async";
     version = "v1.8.6";
-    src = fetchFromGitHub ({
+    src = fetchFromGitHub {
       owner = "mafredri";
       repo = "zsh-async";
       rev = "v1.8.6";
       fetchSubmodules = false;
       sha256 = "sha256-Js/9vGGAEqcPmQSsumzLfkfwljaFWHJ9sMWOgWDi0NI=";
-    });
+    };
   };
   zsh-history-substring-search = {
     pname = "zsh-history-substring-search";
-    version = "v1.0.2";
-    src = fetchFromGitHub ({
+    version = "v1.1.0";
+    src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-history-substring-search";
-      rev = "v1.0.2";
+      rev = "v1.1.0";
       fetchSubmodules = false;
-      sha256 = "sha256-Ptxik1r6anlP7QTqsN1S2Tli5lyRibkgGlVlwWZRG3k=";
-    });
+      sha256 = "sha256-GSEvgvgWi1rrsgikTzDXokHTROoyPRlU0FVpAoEmXG4=";
+    };
   };
   zsh-syntax-highlighting = {
     pname = "zsh-syntax-highlighting";
-    version = "0.7.1";
-    src = fetchFromGitHub ({
+    version = "0.8.0";
+    src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-syntax-highlighting";
-      rev = "0.7.1";
+      rev = "0.8.0";
       fetchSubmodules = false;
-      sha256 = "sha256-gOG0NLlaJfotJfs+SUhGgLTNOnGLjoqnUp54V9aFJg8=";
-    });
+      sha256 = "sha256-iJdWopZwHpSyYl5/FQXEW7gl/SrKaYDEtTH9cGP7iPo=";
+    };
   };
 }
