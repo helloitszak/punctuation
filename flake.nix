@@ -2,10 +2,11 @@
   description = "Zak's Home Configuration and Dotfiles";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-22.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -19,15 +20,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+
+    nvd = {
+      url = "gitlab:khumba/nvd";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
+    # nixpkgs-unstable,
     home-manager,
     flake-utils,
     nvfetcher,
     alejandra,
+    nvd,
     ...
   }: let
     local-pkgs = import ./nix/local {};
@@ -38,6 +47,7 @@
     ];
 
     pkgs = import nixpkgs {inherit overlays system;};
+    # pkgs-unstable = import nixpkgs-unstable {inherit overlays system;};
     username = "zakko";
     system = "aarch64-darwin";
   in
@@ -52,12 +62,28 @@
         modules = [
           ./nix/home-modules/default.nix
           {
+            nix = {
+              # make flake references to 'nixpkgs' resolve to this flake's
+              # nixpkgs instead of nixpkgs-unstable.
+              #
+              # You can still do 'nixpkgs/nixpkgs-unstable' if you want upstream.
+              registry.nixpkgs.flake = nixpkgs;
+            };
+
+            nixpkgs = {
+              config = {
+                allowUnfree = true;
+                # allowUnfreePredicate = (_: true);
+              };
+            };
+
             home = {
               inherit username;
-              stateVersion = "22.11";
-              homeDirectory = "/home/${username}";
+              stateVersion = "23.05";
+              homeDirectory = "/Users/${username}";
               packages = [
                 alejandra.defaultPackage.${system}
+                nvd.defaultPackage.${system}
               ];
             };
           }
@@ -75,7 +101,7 @@
         
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            nixfmt
+            nixfmt-rfc-style
             alejandra.defaultPackage.${system}
             nvfetcher-bin
             home-manager.defaultPackage.${system}

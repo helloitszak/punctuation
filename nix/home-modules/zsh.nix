@@ -17,16 +17,16 @@
 
   xdg.configFile."zsh/plugins/zsh-async" = {
     recursive = true;
-    source = pkgs.local.sources.zsh-async.src;
+    source = pkgs.local-sources.zsh-async.src;
   };
 
   xdg.configFile."zsh/plugins/zsh-syntax-highlighting" = {
     recursive = true;
-    source = pkgs.local.sources.zsh-syntax-highlighting.src;
+    source = pkgs.local-sources.zsh-syntax-highlighting.src;
   };
 
   xdg.configFile."zsh/plugins/zsh-history-substring-search" = {
     recursive = true;
-    source = pkgs.local.sources.zsh-history-substring-search.src;
+    source = pkgs.local-sources.zsh-history-substring-search.src;
   };
 }

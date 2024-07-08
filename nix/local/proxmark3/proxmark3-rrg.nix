@@ -1,4 +1,4 @@
-{ lib,stdenv, fetchFromGitHub, pkg-config, bzip2
+{ lib,stdenv, fetchFromGitHub, pkg-config, bzip2, lz4, openssl
 , buildPackages
 , readline
 , pkgsx86_64Darwin
@@ -8,13 +8,13 @@
 
 stdenv.mkDerivation rec {
   pname = "proxmark3-rrg";
-  version = "4.14831";
+  version = "4.18589";
 
   src = fetchFromGitHub {
     owner = "RfidResearchGroup";
     repo = "proxmark3";
     rev = "v${version}";
-    sha256 = "sha256-s0D04V6vlGW7SVkJwzMKaVfXQoT3Wi0lu7RC61Es89A=";
+    sha256 = "sha256-e/FoyaHU/uH2yovEqtkrCXwHMlF94Acxl2lUA422Pig=";
   };
 
   nativeBuildInputs = [
@@ -24,18 +24,12 @@ stdenv.mkDerivation rec {
   
   buildInputs = [
     bzip2
+    lz4
     readline
+    openssl
     buildPackages.darwin.apple_sdk.frameworks.Foundation
     buildPackages.darwin.apple_sdk.frameworks.AppKit
   ];
-
-  preConfigure = "LD=$CC";
-
-  prePatch = ''
-    substituteInPlace Makefile.defs --replace 'CC = gcc' 'CC ?= gcc'
-    substituteInPlace Makefile.defs --replace 'CXX = g++' 'CC ?= g++'
-    substituteInPlace Makefile.defs --replace 'LD = g++' 'CC ?= g++'
-  '';
 
   makeFlags = [
     "PLATFORM=${hardwarePlatform}"

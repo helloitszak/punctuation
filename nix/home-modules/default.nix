@@ -16,12 +16,13 @@
     inetutils
     aria2
     vim
-    exa
+    # exa # TODO: something
     fd
     sd
     fzf
     bat
     yt-dlp
+    mpv
     # httpie
     curl
     jq
@@ -34,6 +35,8 @@
     kubectl
     cmake
     ipcalc
+    _1password
+    pwgen
     local.proxmark3-rrg
   ];
 
