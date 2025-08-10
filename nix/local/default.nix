@@ -8,6 +8,7 @@
       local = {
         git-gud = callPackage ./git-gud/default.nix {};
         proxmark3-rrg = callPackage ./proxmark3/proxmark3-rrg.nix {};
+        rpiboot = callPackage ./rpiboot/rpiboot.nix {};
       };
     }
   );

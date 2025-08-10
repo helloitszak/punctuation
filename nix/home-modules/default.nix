@@ -9,7 +9,6 @@
   ];
 
   home.packages = with pkgs; [
-    nodejs
     ffmpeg
     bash
     nmap
@@ -25,19 +24,30 @@
     mpv
     # httpie
     curl
+    wget
     jq
     nushell
     ripgrep
     rustup
     tree
-    youtube-dl
+    yt-dlp
     minikube
+    vfkit
     kubectl
+    krew
     cmake
     ipcalc
-    _1password
+    _1password-cli
     pwgen
     local.proxmark3-rrg
+    devenv
+    numbat
+    poetry
+    kind
+    hurl
+    pipx
+    sshpass
+    devenv
   ];
 
   programs.direnv = {

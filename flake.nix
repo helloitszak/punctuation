@@ -2,11 +2,11 @@
   description = "Zak's Home Configuration and Dotfiles";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -22,7 +22,7 @@
     };
 
     nvd = {
-      url = "gitlab:khumba/nvd";
+      url = "sourcehut:~khumba/nvd";
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -82,7 +82,7 @@
               stateVersion = "23.05";
               homeDirectory = "/Users/${username}";
               packages = [
-                alejandra.defaultPackage.${system}
+                alejandra.packages.${system}.default
                 nvd.defaultPackage.${system}
               ];
             };
@@ -96,15 +96,15 @@
       in {
         # Allow usage of local packages ad-hoc
         packages = pkgs.local // {
-          home-manager = home-manager.defaultPackage.${system};
+          home-manager = home-manager.packages.${system}.default;
         };
         
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nixfmt-rfc-style
-            alejandra.defaultPackage.${system}
+            alejandra.packages.${system}.default
             nvfetcher-bin
-            home-manager.defaultPackage.${system}
+            home-manager.packages.${system}.default
           ];
         };
       }

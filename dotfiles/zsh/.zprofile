@@ -55,11 +55,13 @@ fpath=(
 # /usr/bin is in here for cygwin compatibility because fml
 path=(
   $HOME/bin
+  $HOME/.local/bin
   $HOME/.nix-profile/bin
   $HOME/.udots/udbin
   $HOME/.cargo/bin
   $HOME/.poetry/bin
   $HOME/.rd/bin # Rancher Desktop
+  $HOME/.krew/bin
   $HOME/perl5/bin
   /usr/local/opt/go/libexec/bin
   /usr/local/{bin,sbin}

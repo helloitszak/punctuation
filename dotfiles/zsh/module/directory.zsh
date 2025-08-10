@@ -47,7 +47,7 @@ alias ln='lni'
 #
 if is-callable 'dircolors'; then
   # GNU Core Utilities
-  alias ls='ls --group-directories-first'
+  # alias ls='ls --group-directories-first'
   if [[ -s "$HOME/.dir_colors" ]]; then
     eval "$(dircolors --sh "$HOME/.dir_colors")"
   else
