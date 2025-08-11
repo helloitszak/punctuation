@@ -10,7 +10,7 @@
     ./shell.nix
     ./misc.nix
     ./development.nix
-    ../machines
+    ./machines
   ];
 
   nix = {
