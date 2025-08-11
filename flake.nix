@@ -64,6 +64,7 @@
           ./nix/home-modules/default.nix
         ];
         extraSpecialArgs = {
+          config-name = args.name;
           dotroot = ./.;
           nixpkgs = nixpkgs;
         };
@@ -97,8 +98,14 @@
     {
       homeConfigurations = {
         "GardenMac" = homeConfiguration {
+          name = "GardenMac";
           system = "aarch64-darwin";
           stateVersion = "25.05";
+        };
+        "Zakbook-M1" = homeConfiguration {
+          name = "Zakbook-M1";
+          system = "aarch64-darwin";
+          stateVersion = "23.05";
         };
       };
     };
