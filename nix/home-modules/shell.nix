@@ -2,11 +2,34 @@
   pkgs,
   ...
 }: {
-  programs.starship.enable = true;
-  # programs.starship.
+  # Better prompt
+  programs.starship = {
+    enable = true;
+  };
+
+  # Better history
+  programs.atuin = {
+    enable = true;
+  };
 
   # TODO: Look into bringing in custom zsh config here
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+
+    };
+
+    setOptions = [
+    ];
+
+    # Keep the classic.
+    logoutExtra = ''
+    cat <<-EOF
+
+    Let's initiate the survival strategy.
+    EOF
+    '';
+  };
   
   # This is on by default, but enables the random programs to automatically
   # integrate with zsh.
