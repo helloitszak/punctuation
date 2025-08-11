@@ -3,17 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flake-utils.url = "github:numtide/flake-utils";
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
-    alejandra.url = "github:kamadorueda/alejandra/3.0.0";
-    alejandra.inputs.nixpkgs.follows = "nixpkgs";
+    flake-utils.url = "github:numtide/flake-utils";
 
     nvfetcher = {
       url = "github:berberman/nvfetcher";
@@ -31,82 +33,73 @@
   outputs = {
     self,
     nixpkgs,
-    # nixpkgs-unstable,
+    nixpkgs-unstable,
     home-manager,
     flake-utils,
     nvfetcher,
-    alejandra,
     nvd,
     ...
   }: let
     local-pkgs = import ./nix/local {};
 
-    overlays = [
-      local-pkgs.overlay
-      nvfetcher.overlays.default
-    ];
+    pkgsForSystem = system: nixpkgsSource: import nixpkgsSource {
+      overlays = [
+        local-pkgs.overlay
+        nvfetcher.overlays.default
+      ];
+      config.allowUnfree = true;
+      inherit system;
+    };
 
-    pkgs = import nixpkgs {inherit overlays system;};
-    # pkgs-unstable = import nixpkgs-unstable {inherit overlays system;};
-    username = "zakko";
-    system = "aarch64-darwin";
-  in
-    {
-      homeConfigurations."${username}@Zakbook-M1" = home-manager.lib.homeManagerConfiguration rec {
-        inherit pkgs;
-
-        extraSpecialArgs = {
-          dotroot = ./.;
-        };
-
+    homeConfiguration = args:
+      home-manager.lib.homeManagerConfiguration {
         modules = [
-          ./nix/home-modules/default.nix
           {
-            nix = {
-              # make flake references to 'nixpkgs' resolve to this flake's
-              # nixpkgs instead of nixpkgs-unstable.
-              #
-              # You can still do 'nixpkgs/nixpkgs-unstable' if you want upstream.
-              registry.nixpkgs.flake = nixpkgs;
-            };
-
-            nixpkgs = {
-              config = {
-                allowUnfree = true;
-                # allowUnfreePredicate = (_: true);
-              };
-            };
-
             home = {
-              inherit username;
-              stateVersion = "23.05";
+              username = "zakko";
+              stateVersion = args.stateVersion;
               homeDirectory = "/Users/${username}";
-              packages = [
-                alejandra.packages.${system}.default
-                nvd.defaultPackage.${system}
-              ];
             };
           }
+          ./nix/home-modules/default.nix
         ];
-      };
-    }
-    // flake-utils.lib.eachDefaultSystem (
-      system: let
-        pkgs = import nixpkgs {inherit system overlays;};
-      in {
-        # Allow usage of local packages ad-hoc
-        packages = pkgs.local // {
-          home-manager = home-manager.packages.${system}.default;
+        extraSpecialArgs = {
+          dotroot = ./.;
+          nixpkgs = nixpkgs;
         };
-        
-        devShells.default = pkgs.mkShell {
+        pkgs = pkgsForSystem (args.system) nixpkgs;
+      };
+
+
+    username = "zakko";
+  in
+    flake-utils.lib.eachSystem [
+      "x86-64-linux"
+      "aarch64-linux"
+      "aarch64-darwin"
+    ] (system: {
+      packages.home-manager = home-manager.packages.${system}.default;
+
+      devShells.default = let
+        pkgs = pkgsForSystem (system) nixpkgs;
+      in
+        pkgs.mkShell {
           buildInputs = with pkgs; [
             nixfmt-rfc-style
-            alejandra.packages.${system}.default
-            nvfetcher-bin
             home-manager.packages.${system}.default
+            nvfetcher.packages.${system}.default
+            (pkgs.writeShellScriptBin "test-script" ''
+            echo "hello world";
+            '')
           ];
         };
-      }
-    );
+    }) //
+    {
+      homeConfigurations = {
+        "GardenMac" = homeConfiguration {
+          system = "aarch64-darwin";
+          stateVersion = "25.05";
+        };
+      };
+    };
 }
