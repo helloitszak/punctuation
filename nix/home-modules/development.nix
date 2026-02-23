@@ -16,6 +16,11 @@
     nix-direnv.enable = true;
   };
 
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+  };
+
   home.packages = with pkgs; [
     rustup
     minikube

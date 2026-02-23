@@ -1,9 +1,11 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.git = {
     enable = true;
-    userEmail = "zak.kristjanson@gmail.com";
-    userName = "Zak Kristjanson";
-    delta.enable = true;
+    settings.user = {
+      email = "zak.kristjanson@gmail.com";
+      name = "Zak Kristjanson";
+    };
   };
 
   home.packages = with pkgs; [
