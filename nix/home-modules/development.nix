@@ -1,8 +1,8 @@
 {
   pkgs,
-  dotroot,
   ...
-}: {
+}:
+{
   # Enable mise-en-place
   programs.mise.enable = true;
 
@@ -10,6 +10,7 @@
   programs.uv.enable = true;
 
   # We use direnv, mostly just for this flake. Anything that uses nix directly.
+  # This will automatially integrate direnv with zsh.
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -20,5 +21,10 @@
     minikube
     vfkit
     hurl
+    nil
+    nixd
+
+    # Fancy code highlighting pager
+    delta
   ];
 }

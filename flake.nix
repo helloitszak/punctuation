@@ -30,72 +30,79 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    home-manager,
-    flake-utils,
-    nvfetcher,
-    nvd,
-    ...
-  }: let
-    local-pkgs = import ./nix/local {};
-
-    pkgsForSystem = system: nixpkgsSource: import nixpkgsSource {
-      overlays = [
-        local-pkgs.overlay
-        nvfetcher.overlays.default
-      ];
-      config.allowUnfree = true;
-      inherit system;
-    };
-
-    homeConfiguration = args:
-      home-manager.lib.homeManagerConfiguration {
-        modules = [
-          {
-            home = {
-              username = "zakko";
-              stateVersion = args.stateVersion;
-              homeDirectory = "/Users/${username}";
-            };
-          }
-          ./nix/home-modules/default.nix
-        ];
-        extraSpecialArgs = {
-          config-name = args.name;
-          dotroot = ./.;
-          nixpkgs = nixpkgs;
-        };
-        pkgs = pkgsForSystem (args.system) nixpkgs;
-      };
-
-
-    username = "zakko";
-  in
-    flake-utils.lib.eachSystem [
-      "x86-64-linux"
-      "aarch64-linux"
-      "aarch64-darwin"
-    ] (system: {
-      packages.home-manager = home-manager.packages.${system}.default;
-
-      devShells.default = let
-        pkgs = pkgsForSystem (system) nixpkgs;
-      in
-        pkgs.mkShell {
-          buildInputs = with pkgs; [
-            nixfmt-rfc-style
-            home-manager.packages.${system}.default
-            nvfetcher.packages.${system}.default
-            (pkgs.writeShellScriptBin "test-script" ''
-            echo "hello world";
-            '')
-          ];
-        };
-    }) //
+  outputs =
     {
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      home-manager,
+      flake-utils,
+      nvfetcher,
+      nvd,
+      ...
+    }:
+    let
+      local-pkgs = import ./nix/local { };
+
+      pkgsForSystem =
+        system: nixpkgsSource:
+        import nixpkgsSource {
+          overlays = [
+            local-pkgs.overlay
+            nvfetcher.overlays.default
+          ];
+          config.allowUnfree = true;
+          inherit system;
+        };
+
+      homeConfiguration =
+        args:
+        home-manager.lib.homeManagerConfiguration {
+          modules = [
+            {
+              home = {
+                username = "zakko";
+                stateVersion = args.stateVersion;
+                homeDirectory = "/Users/${username}";
+              };
+            }
+            ./nix/home-modules/default.nix
+          ];
+          extraSpecialArgs = {
+            config-name = args.name;
+            dotroot = ./.;
+            nixpkgs = nixpkgs;
+          };
+          pkgs = pkgsForSystem (args.system) nixpkgs;
+        };
+
+      username = "zakko";
+    in
+    flake-utils.lib.eachSystem
+      [
+        "x86-64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ]
+      (system: {
+        packages.home-manager = home-manager.packages.${system}.default;
+
+        devShells.default =
+          let
+            pkgs = pkgsForSystem (system) nixpkgs;
+          in
+          pkgs.mkShell {
+            buildInputs = with pkgs; [
+              nixfmt-rfc-style
+              home-manager.packages.${system}.default
+              nvfetcher.packages.${system}.default
+              (pkgs.writeShellScriptBin "test-script" ''
+                echo "hello world";
+              '')
+            ];
+          };
+      })
+    // {
       homeConfigurations = {
         "GardenMac" = homeConfiguration {
           name = "GardenMac";
