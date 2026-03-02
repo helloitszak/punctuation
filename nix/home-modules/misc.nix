@@ -4,7 +4,7 @@
 }:
 {
   home.packages = with pkgs; [
-    ffmpeg
+    (pkgs.ffmpeg-full.override { withUnfree = true; })
     mpv
     yt-dlp
     gallery-dl
