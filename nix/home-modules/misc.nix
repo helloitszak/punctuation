@@ -1,14 +1,16 @@
 {
   pkgs,
+  pkgs-unstable,
   ...
 }:
 {
   home.packages = with pkgs; [
-    (pkgs.ffmpeg-full.override { withUnfree = true; })
+    (pkgs-unstable.ffmpeg-full.override { withUnfree = true; })
     mpv
     yt-dlp
     gallery-dl
     nmap
+    aria2
   ];
   #   nmap
   #   aria2

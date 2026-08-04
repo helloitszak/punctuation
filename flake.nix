@@ -72,6 +72,7 @@
             config-name = args.name;
             dotroot = ./.;
             nixpkgs = nixpkgs;
+            pkgs-unstable = pkgsForSystem (args.system) nixpkgs-unstable;
           };
           pkgs = pkgsForSystem (args.system) nixpkgs;
         };

@@ -14,6 +14,9 @@
   # Better history
   programs.atuin = {
     enable = true;
+    flags = [
+      "--disable-up-arrow"
+    ];
   };
 
   # TODO: Look into bringing in custom zsh config here
