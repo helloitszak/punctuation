@@ -6,6 +6,7 @@
     gallery-dl
     nmap
     aria2
+    proxmark3
   ];
   #   nmap
   #   aria2
