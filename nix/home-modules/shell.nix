@@ -67,17 +67,16 @@
   programs.ripgrep.enable = true;
 
   # This isn't in stable yet...
-  # programs.grep.enable = true;
-  # programs.grep.colors = {
-  #   mt = "37;45";
-  # };
+  programs.grep.enable = true;
+  programs.grep.colors = {
+    mt = "37;45";
+  };
 
   # Zoxide, jump around.
   programs.zoxide.enable = true;
 
   home.sessionVariables = {
     LESS = "-F -g -i -M -R -S -w -X -z-4";
-    GREP_COLORS = "mt=37;45";
   };
 
   # Shells and core commonly used shell utilities.

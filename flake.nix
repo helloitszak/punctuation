@@ -116,6 +116,14 @@
           ./nix/home-manager/GardenMac-zakko.nix
         ];
       };
+
+      "ZakbookM1" = mkHomeConfiguration {
+        name = "ZakbookM1";
+        system = "aarch64-darwin";
+        modules = [
+          ./nix/home-manager/ZakbookM1-zakko.nix
+        ];
+      };
     };
   };
 }

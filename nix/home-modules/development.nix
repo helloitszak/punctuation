@@ -24,6 +24,11 @@
     hurl
     nil
     nixd
+    uv
+    watch
+    kubectl
+    krew
+    bazelisk
 
     # Fancy code highlighting pager
     delta
