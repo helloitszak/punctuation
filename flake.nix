@@ -17,12 +17,6 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    nvfetcher = {
-      url = "github:berberman/nvfetcher";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
     nvd = {
       url = "sourcehut:~khumba/nvd";
       inputs.flake-utils.follows = "flake-utils";
@@ -35,7 +29,6 @@
     nixpkgs-unstable,
     home-manager,
     flake-utils,
-    nvfetcher,
     nvd,
     ...
   } @ inputs: let
@@ -111,7 +104,6 @@
           buildInputs = with pkgs; [
             alejandra
             home-manager.packages.${system}.default
-            nvfetcher.packages.${system}.default
           ];
         };
     });
@@ -124,19 +116,6 @@
           ./nix/home-manager/GardenMac-zakko.nix
         ];
       };
-      # "GardenMac" = home-manager.lib.homeManagerConfiguration {
-      #   # system = "aarch64-darwin";
-      #   pkgs = pkgsForSystem "aarch64-darwin" nixpkgs;
-      #   modules = [
-      #     {
-      #       home = {
-      #         homeDirectory = "/home/zakko";
-      #         username = "zakko";
-      #         stateVersion = "23.05";
-      #       };
-      #     }
-      #   ];
-      # };
     };
   };
 }
