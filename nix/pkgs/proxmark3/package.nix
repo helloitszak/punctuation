@@ -1,11 +1,17 @@
-{ lib,stdenv, fetchFromGitHub, pkg-config, bzip2, lz4, openssl
-, buildPackages
-, readline
-, pkgsx86_64Darwin
-, hardwarePlatform ? "PM3RDV4"
-
-, hardwarePlatformExtras ? "" }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  pkg-config,
+  bzip2,
+  lz4,
+  openssl,
+  buildPackages,
+  readline,
+  pkgsx86_64Darwin,
+  hardwarePlatform ? "PM3RDV4",
+  hardwarePlatformExtras ? "",
+}:
 stdenv.mkDerivation rec {
   pname = "proxmark3-rrg";
   version = "4.18589";
@@ -21,7 +27,7 @@ stdenv.mkDerivation rec {
     pkg-config
     pkgsx86_64Darwin.gcc-arm-embedded
   ];
-  
+
   buildInputs = [
     bzip2
     lz4
@@ -35,7 +41,6 @@ stdenv.mkDerivation rec {
     "PLATFORM=${hardwarePlatform}"
     "PLATFORM_EXTRAS=${hardwarePlatformExtras}"
   ];
-
 
   installPhase = ''
     make install PREFIX=$out
@@ -51,6 +56,6 @@ stdenv.mkDerivation rec {
     description = "Client for proxmark3, powerful general purpose RFID tool";
     homepage = "https://rfidresearchgroup.com/";
     license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ nyanotech ];
+    maintainers = with maintainers; [nyanotech];
   };
 }

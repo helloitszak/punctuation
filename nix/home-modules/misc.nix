@@ -1,11 +1,6 @@
-{
-  pkgs,
-  pkgs-unstable,
-  ...
-}:
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
-    (pkgs-unstable.ffmpeg-full.override { withUnfree = true; })
+    unstablePkgs.ffmpeg-full
     mpv
     yt-dlp
     gallery-dl

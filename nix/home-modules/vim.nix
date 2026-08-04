@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -10,6 +7,5 @@
 
     # set EDITOR
     defaultEditor = true;
-
   };
 }

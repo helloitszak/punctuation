@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ...
-}:
-{
+{pkgs, ...}: {
   # Use XDG for everything... this will be important next version
   xdg.enable = true;
 
@@ -34,9 +30,7 @@
       ];
     };
 
-    shellAliases = {
-
-    };
+    shellAliases = {};
 
     # setOptions = [
     # ];

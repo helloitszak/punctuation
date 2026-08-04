@@ -1,5 +1,10 @@
-{ lib, stdenv, fetchFromGitHub, libusb1, pkg-config }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  libusb1,
+  pkg-config,
+}:
 stdenv.mkDerivation rec {
   name = "rpiboot";
 
@@ -11,8 +16,8 @@ stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  buildInputs = [ libusb1 ];
-  nativeBuildInputs = [ pkg-config ];
+  buildInputs = [libusb1];
+  nativeBuildInputs = [pkg-config];
 
   patchPhase = ''
     sed -i "s@/usr/@$out/@g" main.c
@@ -30,7 +35,7 @@ stdenv.mkDerivation rec {
     description = "Utility to boot a Raspberry Pi CM/CM3/CM4/Zero over USB";
     mainProgram = "rpiboot";
     license = licenses.asl20;
-    maintainers = with maintainers; [ cartr flokli ];
-    platforms = [ "aarch64-linux" "aarch64-darwin" "armv7l-linux" "armv6l-linux" "x86_64-linux" "x86_64-darwin" ];
+    maintainers = with maintainers; [cartr flokli];
+    platforms = ["aarch64-linux" "aarch64-darwin" "armv7l-linux" "armv6l-linux" "x86_64-linux" "x86_64-darwin"];
   };
 }

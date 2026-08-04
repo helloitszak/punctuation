@@ -1,5 +1,5 @@
 {
-  description = "Zak's Home Configuration and Dotfiles";
+  description = "Home Configuration and Dotfiles";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
@@ -29,92 +29,114 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+  outputs = {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    home-manager,
+    flake-utils,
+    nvfetcher,
+    nvd,
+    ...
+  } @ inputs: let
+    # Supported systems for your flake packages, shell, etc.
+    systems = [
+      "aarch64-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+    ];
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      nixpkgs-unstable,
-      home-manager,
-      flake-utils,
-      nvfetcher,
-      nvd,
-      ...
-    }:
-    let
-      local-pkgs = import ./nix/local { };
+    # This is a function that generates an attribute by calling a function you
+    # pass to it, with each system as an argument
+    forAllSystems = nixpkgs.lib.genAttrs systems;
 
-      pkgsForSystem =
-        system: nixpkgsSource:
-        import nixpkgsSource {
-          overlays = [
-            local-pkgs.overlay
-            nvfetcher.overlays.default
-          ];
-          config.allowUnfree = true;
-          inherit system;
-        };
+    pkgsForSystem = system: nixpkgsSource:
+      import nixpkgsSource {
+        config.allowUnfree = true;
+        inherit system;
+      };
 
-      homeConfiguration =
-        args:
-        home-manager.lib.homeManagerConfiguration {
-          modules = [
+    # Helper function to generate a home configration.
+    # It includes:
+    # - nixpkgs with all custom overlays
+    # - some extraSpecialArgs for making dotfiles themselves easier
+    mkHomeConfiguration = args:
+      home-manager.lib.homeManagerConfiguration {
+        modules =
+          [
             {
-              home = {
-                username = "zakko";
-                stateVersion = args.stateVersion;
-                homeDirectory = "/Users/${username}";
+              nixpkgs = {
+                overlays = [
+                  inputs.self.overlays.additions
+                  inputs.self.overlays.modifications
+                  inputs.self.overlays.unstable-packages
+                ];
+
+                # I genuinely don't know if this is needed in both places but whatever
+                config.allowUnfree = true;
               };
             }
-            ./nix/home-modules/default.nix
-          ];
-          extraSpecialArgs = {
-            config-name = args.name;
-            dotroot = ./.;
-            nixpkgs = nixpkgs;
-            pkgs-unstable = pkgsForSystem (args.system) nixpkgs-unstable;
-          };
-          pkgs = pkgsForSystem (args.system) nixpkgs;
+          ]
+          ++ args.modules;
+        extraSpecialArgs = {
+          config-name = args.name;
+          dotroot = ./.;
+          nixpkgs = nixpkgs;
         };
-
-      username = "zakko";
-    in
-    flake-utils.lib.eachSystem
-      [
-        "x86-64-linux"
-        "aarch64-linux"
-        "aarch64-darwin"
-      ]
-      (system: {
-        packages.home-manager = home-manager.packages.${system}.default;
-
-        devShells.default =
-          let
-            pkgs = pkgsForSystem (system) nixpkgs;
-          in
-          pkgs.mkShell {
-            buildInputs = with pkgs; [
-              nixfmt-rfc-style
-              home-manager.packages.${system}.default
-              nvfetcher.packages.${system}.default
-              (pkgs.writeShellScriptBin "test-script" ''
-                echo "hello world";
-              '')
-            ];
-          };
-      })
-    // {
-      homeConfigurations = {
-        "GardenMac" = homeConfiguration {
-          name = "GardenMac";
-          system = "aarch64-darwin";
-          stateVersion = "25.05";
-        };
-        "Zakbook-M1" = homeConfiguration {
-          name = "Zakbook-M1";
-          system = "aarch64-darwin";
-          stateVersion = "23.05";
-        };
+        pkgs = pkgsForSystem (args.system) nixpkgs;
       };
+  in {
+    # Make all my custom packages available in the flake
+    packages = forAllSystems (system: import ./nix/pkgs nixpkgs.legacyPackages.${system});
+
+    # Specify formatter to use for `nix fmt`.
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+
+    # Custom packages and modifications as overlays
+    overlays = import ./nix/overlays {inherit inputs;};
+
+    # Reusable nixos modules
+    nixosModules = import ./nix/modules/nixos;
+
+    # Reusable home-manager modules
+    homeModules = import ./nix/modules/home-manager;
+
+    # devShells! This should setup a nice tasty bootstrap for us.
+    # It's meant to be the thing that direnv drops you into.
+    devShells = forAllSystems (system: {
+      default = let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+        pkgs.mkShell {
+          buildInputs = with pkgs; [
+            alejandra
+            home-manager.packages.${system}.default
+            nvfetcher.packages.${system}.default
+          ];
+        };
+    });
+
+    homeConfigurations = {
+      "GardenMac" = mkHomeConfiguration {
+        name = "GardenMac2";
+        system = "aarch64-darwin";
+        modules = [
+          ./nix/home-manager/GardenMac-zakko.nix
+        ];
+      };
+      # "GardenMac" = home-manager.lib.homeManagerConfiguration {
+      #   # system = "aarch64-darwin";
+      #   pkgs = pkgsForSystem "aarch64-darwin" nixpkgs;
+      #   modules = [
+      #     {
+      #       home = {
+      #         homeDirectory = "/home/zakko";
+      #         username = "zakko";
+      #         stateVersion = "23.05";
+      #       };
+      #     }
+      #   ];
+      # };
     };
+  };
 }

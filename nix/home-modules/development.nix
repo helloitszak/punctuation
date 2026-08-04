@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ...
-}:
-{
+{pkgs, ...}: {
   # Enable mise-en-place
   programs.mise.enable = true;
 

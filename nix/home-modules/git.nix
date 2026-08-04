@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   programs.git = {
     enable = true;
     settings.user = {
@@ -9,7 +8,7 @@
   };
 
   home.packages = with pkgs; [
-    local.git-gud
+    git-gud
     gh
   ];
 }
