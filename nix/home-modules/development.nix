@@ -44,7 +44,7 @@
     bazelisk
     nodejs
     just
-    treehouse
+    # treehouse
     #
     # Fancy code highlighting pager
     delta

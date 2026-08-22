@@ -112,13 +112,40 @@ def current_home_generation() -> str | None:
 
 
 def build_home_generation(flake_ref: str, config_name: str) -> str:
-    """Build a config's activation package and return its store path."""
+    """Build a config's activation package and return its store path.
+
+    Builder progress (nix's stderr) streams straight to the terminal; only the
+    store path (nix's stdout) is captured.
+    """
     attr = f"{flake_ref}#homeConfigurations.{config_name}.activationPackage"
-    output = _run(["nix", "build", attr, "--no-link", "--print-out-paths"])
-    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    cmd = ["nix", "build", attr, "--no-link", "--print-out-paths"]
+    try:
+        proc = subprocess.run(
+            cmd,
+            check=False,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+    except FileNotFoundError as exc:
+        raise NixError(f"command not found: {cmd[0]}") from exc
+    if proc.returncode != 0:
+        raise NixError(f"`{' '.join(cmd)}` failed (exit {proc.returncode})")
+    lines = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
     if not lines:
         raise NixError("nix build produced no output path")
     return lines[-1]
+
+
+def collect_garbage(older_than_days: int, *, dry_run: bool) -> int:
+    """Run ``nix-collect-garbage --delete-older-than <N>d``, streaming output."""
+    cmd = ["nix-collect-garbage", "--delete-older-than", f"{older_than_days}d"]
+    if dry_run:
+        cmd.append("--dry-run")
+    try:
+        proc = subprocess.run(cmd, check=False)
+    except FileNotFoundError as exc:
+        raise NixError(f"command not found: {cmd[0]}") from exc
+    return proc.returncode
 
 
 def nvd_diff(old_path: str, new_path: str) -> int:

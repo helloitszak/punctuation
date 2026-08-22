@@ -99,12 +99,16 @@ def _select_config(name: str | None, matching: list[str], system: str) -> str:
 
 
 @main.command()
-def switch() -> None:
+@click.option("--no-diff", is_flag=True, help="Skip the nvd diff preview.")
+def switch(no_diff: bool) -> None:
     """Run home-manager switch against the onboarded configuration."""
     try:
         state = config.load_state()
     except config.ConfigError as exc:
         _fail(str(exc))
+
+    if not no_diff:
+        _preview_diff(state, required=False)
 
     console.print(f"[cyan]Switching to [bold]{state.flake_url}[/bold]…[/cyan]")
     try:
@@ -124,19 +128,26 @@ def diff() -> None:
     except config.ConfigError as exc:
         _fail(str(exc))
 
+    _preview_diff(state, required=True)
+
+
+def _preview_diff(state: config.HostState, *, required: bool) -> None:
+    """Build the target generation and show an nvd diff against the current one.
+
+    When ``required`` is False (e.g. a first-ever switch), a missing current
+    generation is a skipped diff rather than an error.
+    """
     current = nix.current_home_generation()
     if current is None:
-        _fail(
-            "no active home-manager generation found. "
-            + "Run [bold]punct switch[/bold] at least once first."
-        )
+        message = "no active home-manager generation found"
+        if required:
+            _fail(f"{message}. Run [bold]punct switch[/bold] at least once first.")
+        console.print(f"[yellow]{message}; skipping diff.[/yellow]")
+        return
 
+    console.print(f"[cyan]Building [bold]{state.config_name}[/bold]…[/cyan]")
     try:
-        with console.status(
-            f"[cyan]Building [bold]{state.config_name}[/bold]…[/cyan]",
-            spinner="dots",
-        ):
-            target = nix.build_home_generation(state.flake_ref, state.config_name)
+        target = nix.build_home_generation(state.flake_ref, state.config_name)
     except nix.NixError as exc:
         _fail(str(exc))
 
@@ -176,6 +187,40 @@ def status() -> None:
     table.add_row("System", state.system)
     table.add_row("Onboarded", state.onboarded_at)
     console.print(table)
+
+
+@main.command()
+@click.option(
+    "--older-than",
+    "older_than",
+    type=click.IntRange(min=0),
+    default=14,
+    show_default=True,
+    help="Delete generations older than this many days.",
+)
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be deleted without deleting."
+)
+@click.option("--yes", is_flag=True, help="Skip the confirmation prompt.")
+def gc(older_than: int, dry_run: bool, yes: bool) -> None:
+    """Collect nix garbage older than N days (default 14)."""
+    if not dry_run and not yes:
+        proceed = Confirm.ask(
+            f"Delete generations older than [bold]{older_than}[/bold] days "
+            + "and collect garbage?",
+            default=False,
+        )
+        if not proceed:
+            console.print("Left unchanged.")
+            return
+
+    try:
+        code = nix.collect_garbage(older_than, dry_run=dry_run)
+    except nix.NixError as exc:
+        _fail(str(exc))
+
+    if code != 0:
+        raise SystemExit(code)
 
 
 def _fail(message: str) -> NoReturn:
