@@ -22,10 +22,8 @@
     };
   };
 
-  # We always deploy nvd everywhere since it's needed for diffing
   home.packages = with pkgs; [
     nvd
-    # punct manages which homeConfigurations entry this host uses
     punct
   ];
 
