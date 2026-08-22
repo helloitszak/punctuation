@@ -22,6 +22,11 @@
     };
   };
 
+  # We always deploy nvd everywhere since it's needed for diffing
+  home.packages = with pkgs; [
+    nvd
+  ];
+
   # Home manager always manages itself
   programs.home-manager.enable = true;
 }

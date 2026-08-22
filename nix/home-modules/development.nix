@@ -29,6 +29,9 @@
     kubectl
     krew
     bazelisk
+    nodejs
+
+    just
 
     # Fancy code highlighting pager
     delta

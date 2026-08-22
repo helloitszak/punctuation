@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, config, ...}: {
   # Use XDG for everything... this will be important next version
   xdg.enable = true;
 
@@ -18,6 +18,7 @@
   # TODO: Look into bringing in custom zsh config here
   programs.zsh = {
     enable = true;
+    dotDir = "${config.xdg.configHome}/zsh";
     defaultKeymap = "emacs";
 
     # Antidote for package manager... later.
