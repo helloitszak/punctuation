@@ -91,6 +91,14 @@
     # Make all my custom packages available in the flake
     packages = forAllSystems (system: import ./nix/pkgs nixpkgs.legacyPackages.${system});
 
+    # `nix run .#punct` targets the punct CLI directly (cold-start onboarding).
+    apps = forAllSystems (system: {
+      punct = {
+        type = "app";
+        program = "${(import ./nix/pkgs nixpkgs.legacyPackages.${system}).punct}/bin/punct";
+      };
+    });
+
     # Specify formatter to use for `nix fmt`.
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
@@ -108,11 +116,19 @@
     devShells = forAllSystems (system: {
       default = let
         pkgs = nixpkgs.legacyPackages.${system};
+        punct = (import ./nix/pkgs pkgs).punct;
       in
         pkgs.mkShell {
           buildInputs = with pkgs; [
             alejandra
             home-manager.packages.${system}.default
+            # punct itself
+            punct
+            # punct development tooling
+            python3
+            uv
+            ruff
+            basedpyright
           ];
         };
     });
