@@ -17,6 +17,19 @@
     enableGitIntegration = true;
   };
 
+  # Once again foiled by something not in stable yet
+  # programs.npm = {
+  #   enable = true;
+  # };
+
+  home.sessionVariables = {
+    NPM_CONFIG_PREFIX = "$HOME/.npm";
+  };
+
+  home.sessionPath = [
+    "$HOME/.npm/bin"
+  ];
+
   home.packages = with pkgs; [
     rustup
     minikube
@@ -30,9 +43,9 @@
     krew
     bazelisk
     nodejs
-
     just
-
+    treehouse
+    #
     # Fancy code highlighting pager
     delta
   ];

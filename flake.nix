@@ -15,6 +15,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    treehouse = {
+      url = "github:kunchenguid/treehouse";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-utils.url = "github:numtide/flake-utils";
 
     nvd = {
@@ -28,6 +33,7 @@
     nixpkgs,
     nixpkgs-unstable,
     home-manager,
+    treehouse,
     flake-utils,
     nvd,
     ...
@@ -63,6 +69,9 @@
                   inputs.self.overlays.additions
                   inputs.self.overlays.modifications
                   inputs.self.overlays.unstable-packages
+                  (final: prev: {
+                    treehouse = treehouse.packages.${args.system}.default;
+                  })
                 ];
 
                 # I genuinely don't know if this is needed in both places but whatever

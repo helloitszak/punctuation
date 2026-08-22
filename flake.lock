@@ -122,7 +122,8 @@
         "home-manager-unstable": "home-manager-unstable",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "nvd": "nvd"
+        "nvd": "nvd",
+        "treehouse": "treehouse"
       }
     },
     "systems": {
@@ -137,6 +138,26 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "treehouse": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785475217,
+        "narHash": "sha256-nybPc6SXPxw5MZIFrjrmJDno9aMH2R4uZz0U8rayAOo=",
+        "owner": "kunchenguid",
+        "repo": "treehouse",
+        "rev": "939cb59ba0bd69036ae52fc19b5b41e0a3f167d3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kunchenguid",
+        "repo": "treehouse",
         "type": "github"
       }
     }
