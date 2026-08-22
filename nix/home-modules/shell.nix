@@ -21,6 +21,12 @@
     dotDir = "${config.xdg.configHome}/zsh";
     defaultKeymap = "emacs";
 
+    # Option+Left/Right move by word (iTerm sends \e[1;3D / \e[1;3C).
+    initContent = ''
+      bindkey "^[[1;3D" backward-word
+      bindkey "^[[1;3C" forward-word
+    '';
+
     # Antidote for package manager... later.
     antidote = {
       enable = true;
