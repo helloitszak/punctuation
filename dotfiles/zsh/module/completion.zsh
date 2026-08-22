@@ -13,6 +13,8 @@ fi
 
 fpath=(
     ${PUNC[ZSH]}/ext/zsh-completions/src
+    # Completions shipped by nix-installed packages (e.g. punct).
+    $HOME/.nix-profile/share/zsh/site-functions
     $fpath
 )
 
