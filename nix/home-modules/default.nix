@@ -8,6 +8,7 @@
     ./vim.nix
     ./git.nix
     ./shell.nix
+    ./darwin.nix
     ./misc.nix
     ./development.nix
   ];
