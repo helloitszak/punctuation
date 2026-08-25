@@ -16,7 +16,9 @@
     };
 
     treehouse = {
-      url = "github:kunchenguid/treehouse/v2.2.1";
+      # Track main: the python3 checkPhase fix (nativeCheckInputs + doCheck=false)
+      # landed after the v2.3.0 tag was cut and isn't in any release tag yet.
+      url = "github:kunchenguid/treehouse/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -70,15 +72,7 @@
                   inputs.self.overlays.modifications
                   inputs.self.overlays.unstable-packages
                   (final: prev: {
-                    # Upstream treehouse v2.2.1's test suite shells out to the
-                    # no-mistakes gate script, which parses attestation JSON with
-                    # python3. Its flake only declares `git` as a check input, so
-                    # the checkPhase fails in the pure Nix sandbox (python3 is
-                    # present on GitHub's ubuntu-latest runners but not here). Add
-                    # python3 to nativeCheckInputs so the tests can run.
-                    treehouse = treehouse.packages.${args.system}.default.overrideAttrs (old: {
-                      nativeCheckInputs = (old.nativeCheckInputs or []) ++ [final.python3];
-                    });
+                    treehouse = treehouse.packages.${args.system}.default;
                   })
                 ];
 

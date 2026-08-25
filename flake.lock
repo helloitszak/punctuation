@@ -148,16 +148,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1787318354,
-        "narHash": "sha256-tTYPGK7khTTld0rJhhLk7E3umzG2op9+WKn+V/sFJWw=",
+        "lastModified": 1787632782,
+        "narHash": "sha256-D4LNWnZ/I4stowES1uQ1U0vY7QcOcEq27uuQzikn0oQ=",
         "owner": "kunchenguid",
         "repo": "treehouse",
-        "rev": "7ce6cdd3d3798574f1ae26303c3d1fc012aaaf03",
+        "rev": "4307a30f6d18457200dbd15954a56d75749454b8",
         "type": "github"
       },
       "original": {
         "owner": "kunchenguid",
-        "ref": "v2.2.1",
+        "ref": "main",
         "repo": "treehouse",
         "type": "github"
       }
