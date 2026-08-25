@@ -72,7 +72,21 @@
                   inputs.self.overlays.modifications
                   inputs.self.overlays.unstable-packages
                   (final: prev: {
-                    treehouse = treehouse.packages.${args.system}.default;
+                    # Install treehouse's cobra-generated shell completions into
+                    # share/{zsh,bash,fish}. The zsh module adds
+                    # ~/.nix-profile/share/zsh/site-functions to fpath, so the
+                    # _treehouse function is picked up by compinit automatically.
+                    treehouse = treehouse.packages.${args.system}.default.overrideAttrs (old: {
+                      nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.installShellFiles];
+                      postInstall =
+                        (old.postInstall or "")
+                        + ''
+                          installShellCompletion --cmd treehouse \
+                            --zsh <($out/bin/treehouse completion zsh) \
+                            --bash <($out/bin/treehouse completion bash) \
+                            --fish <($out/bin/treehouse completion fish)
+                        '';
+                    });
                   })
                 ];
 
