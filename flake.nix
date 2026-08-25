@@ -15,10 +15,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    # treehouse = {
-    #   url = "github:kunchenguid/treehouse/v2.2.1";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    treehouse = {
+      url = "github:kunchenguid/treehouse/v2.2.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -33,7 +33,7 @@
     nixpkgs,
     nixpkgs-unstable,
     home-manager,
-    # treehouse,
+    treehouse,
     flake-utils,
     nvd,
     ...
@@ -69,9 +69,17 @@
                   inputs.self.overlays.additions
                   inputs.self.overlays.modifications
                   inputs.self.overlays.unstable-packages
-                  # (final: prev: {
-                  #   treehouse = treehouse.packages.${args.system}.default;
-                  # })
+                  (final: prev: {
+                    # Upstream treehouse v2.2.1's test suite shells out to the
+                    # no-mistakes gate script, which parses attestation JSON with
+                    # python3. Its flake only declares `git` as a check input, so
+                    # the checkPhase fails in the pure Nix sandbox (python3 is
+                    # present on GitHub's ubuntu-latest runners but not here). Add
+                    # python3 to nativeCheckInputs so the tests can run.
+                    treehouse = treehouse.packages.${args.system}.default.overrideAttrs (old: {
+                      nativeCheckInputs = (old.nativeCheckInputs or []) ++ [final.python3];
+                    });
+                  })
                 ];
 
                 # I genuinely don't know if this is needed in both places but whatever
