@@ -121,6 +121,24 @@ def switch(no_diff: bool) -> None:
 
 
 @main.command()
+def build() -> None:
+    """Build the onboarded configuration without activating it."""
+    try:
+        state = config.load_state()
+    except config.ConfigError as exc:
+        _fail(str(exc))
+
+    console.print(f"[cyan]Building [bold]{state.flake_url}[/bold]…[/cyan]")
+    try:
+        code = nix.home_manager_build(state.flake_url)
+    except nix.NixError as exc:
+        _fail(str(exc))
+
+    if code != 0:
+        raise SystemExit(code)
+
+
+@main.command()
 def diff() -> None:
     """Diff the current generation against the flake, before switching."""
     try:

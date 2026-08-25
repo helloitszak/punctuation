@@ -93,6 +93,19 @@ def home_manager_switch(flake_url: str) -> int:
     return proc.returncode
 
 
+def home_manager_build(flake_url: str) -> int:
+    """Run ``home-manager build --flake <flake_url>`` interactively.
+
+    Builds the configuration (producing a ``result`` symlink) without
+    activating it. Streams output straight to the terminal.
+    """
+    proc = subprocess.run(
+        ["home-manager", "build", "--flake", flake_url],
+        check=False,
+    )
+    return proc.returncode
+
+
 def current_home_generation() -> str | None:
     """Resolve the store path of the active home-manager generation.
 
