@@ -84,6 +84,9 @@
 
   home.sessionVariables = {
     LESS = "-F -g -i -M -R -S -w -X -z-4";
+    # Allow unfree packages in ad-hoc `nix shell/run/develop`
+    # if you pass in --impure
+    NIXPKGS_ALLOW_UNFREE = "1";
   };
 
   # Shells and core commonly used shell utilities.
