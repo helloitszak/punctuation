@@ -35,7 +35,6 @@
     nixpkgs,
     nixpkgs-unstable,
     home-manager,
-    treehouse,
     flake-utils,
     nvd,
     ...
@@ -113,23 +112,10 @@
     # devShells! This should setup a nice tasty bootstrap for us.
     # It's meant to be the thing that direnv drops you into.
     devShells = forAllSystems (system: {
-      default = let
-        pkgs = nixpkgs.legacyPackages.${system};
-        punct = (import ./nix/pkgs pkgs).punct;
-      in
-        pkgs.mkShell {
-          buildInputs = with pkgs; [
-            alejandra
-            home-manager.packages.${system}.default
-            # punct itself
-            punct
-            # punct development tooling
-            python3
-            uv
-            ruff
-            basedpyright
-          ];
-        };
+      default = import ./devshell.nix {
+        inherit inputs system;
+        pkgs = pkgsForSystem system nixpkgs;
+      };
     });
 
     homeConfigurations = {
