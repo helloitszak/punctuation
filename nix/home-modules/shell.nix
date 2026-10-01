@@ -89,6 +89,10 @@
     NIXPKGS_ALLOW_UNFREE = "1";
   };
 
+  home.sessionPath = [
+    "$HOME/.local/bin"
+  ];
+
   # Shells and core commonly used shell utilities.
   # Anything development specific should go elsewhere.
   home.packages = with pkgs; [
