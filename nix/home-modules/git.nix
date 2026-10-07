@@ -2,11 +2,11 @@
   programs.git = {
     enable = true;
     settings.user = {
-      email = "zak.kristjanson@gmail.com";
+      email = "git@rabbit.garden";
       name = "Zak Kristjanson";
     };
     settings.init.defaultBranch = "main";
-    settings.url."git@github.com:".insteadOf = [
+    settings.url."git@github.com:".pushInsteadOf = [
       "https://github.com/"
       "http://github.com/"
     ];

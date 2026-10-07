@@ -41,6 +41,8 @@
     watch
     kubectl
     krew
+    podman
+    podman-compose
     bazelisk
     nodejs
     just
