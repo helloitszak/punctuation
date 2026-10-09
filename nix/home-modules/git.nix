@@ -6,6 +6,7 @@
       name = "Zak Kristjanson";
     };
     settings.init.defaultBranch = "main";
+    settings.pull.ff = "only";
     settings.url."git@github.com:".pushInsteadOf = [
       "https://github.com/"
       "http://github.com/"
