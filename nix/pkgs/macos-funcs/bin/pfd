@@ -8,6 +8,6 @@
 
 osascript 2> /dev/null <<EOF
   tell application "Finder"
-    return POSIX path of (target of first window as text)
+    return POSIX path of (target of front Finder window as «class furl»)
   end tell
 EOF
